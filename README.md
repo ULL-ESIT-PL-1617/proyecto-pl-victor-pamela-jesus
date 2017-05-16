@@ -23,22 +23,32 @@
 
 Esta es la gramática:
 
-    1.  Σ = { 'VAR', ID, '=', 'FUNCTION', 'IF', 'ELSEIF', 'ELSE', NUM, ADDOP, MULOP, 
-              '{', '}', '(', ')', COMPARISONOPERATOR, '||', '&&', 'WHILE' ';' }
-    2.  V = { primario, declaracion, asignacion, funcion, instruccion, expression,
-              term, factor, condicion, sentencia, bucle, llamada, parametro}
+    1.  Σ = { "const", ";", "var", "procedure", "(", ")", ":=", "call", "?",
+              "!", "begin", "end", "if", "then", "else", "while", "do", COMMA,
+              PUNTO, ADDOP, MULOP, COMPARISONOPERATOR }
+    2.  V = { PROGRAMA, BLOQUE, PRIMARIO, INSTRUCCION, ARGUMENTO, CONDICION,
+              EXPRESION, TERM, FACTOR}
     3.  Producciones:
-        1.  primario → (declaracion | (llamada | asignacion))* //Esto es lo que puede haber en global
-        2.  declaracion → 'VAR' asignacion 
-        3.  asignacion → ID '=' (funcion | expression | asignacion) ';'
-        4.  funcion → 'FUNCTION' '(' (parametro)* ')' '{' (instruccion)* '}' ';'
-        5.  instruccion → ((declaracion | sentencia | bucle | llamada | asignacion) ';')*
-        6.  expression → term ADDOP expression | term 
-        7.  term → factor MULOP term | factor
-        8.  factor → '(' expression ')' | NUM
-        9.  condicion → parametro COMPARISONOPERATOR parametro
-        10. sentencia → 'IF' (condicion) '{' instruccion '}' 
-            ('ELSEIF' (condicion) '{' instruccion '}')* ('ELSE' '{' instruccion '}')? ';'
-        11. bucle → 'WHILE' '(' condicion ')' '{' instruccion '}' ';'
-        12. llamada → ID '(' (parametro)* ')' ';'
-        13. parametro → expression | ID
+        1.  PROGRAMA -> BLOQUE PUNTO
+        2.  BLOQUE -> (PRIMARIO)*
+        3.  PRIMARIO -> ("const" (ID IGUAL NUM (COMMA ID IGUAL NUM)*) ";"
+                        | "var" (ID (COMMA ID)*) ";"
+                        | "procedure" ID "(" ((ARGUMENTO COMMA)* ARGUMENTO)? ")" ";" BLOQUE ";"
+                        | INSTRUCCION)
+        4.  INSTRUCCION -> (ID ":=" EXPRESION
+                            | "call" ID "(" ((ARGUMENTO COMMA)* ARGUMENTO)? ")"
+                            | "?" ID
+                            | "!" EXPRESION
+                            | "begin" (INSTRUCCION ";")* "end"
+                            | "if" CONDICION "then" INSTRUCCION ("else" INSTRUCCION)?
+                            | "while" CONDICION "do" (INSTRUCCION)*)
+        5.  ARGUMENTO -> (EXPRESION
+                        | ID)
+        6.  CONDICION -> ("odd" EXPRESION
+                          | EXPRESION COMPARISONOPERATOR EXPRESION)
+        7.  EXPRESION -> (term ADDOP expression 
+                         | term )
+        8.  TERM -> (factor MULOP term 
+                    | factor)
+        9.  FACTOR -> ('(' expression ')' 
+                      | NUM)
