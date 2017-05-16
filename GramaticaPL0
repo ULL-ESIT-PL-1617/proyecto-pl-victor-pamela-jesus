@@ -1,5 +1,5 @@
 PROGRAMA
-  = codigo:BLOQUE PUNTO{
+  = codigo:BLOQUE "."{
     return{
       type: "PROGRAMA",
       value: codigo
@@ -15,19 +15,19 @@ BLOQUE
   }
   
 PRIMARIO
-  = _"const"_ iden:(ID IGUAL NUM (COMMA ID IGUAL NUM)*) _";"_{
+  = "const" iden:(ID "=" NUM ("," ID "=" NUM)*) ";"{
     return {
       type: "CONST",
       id: iden
     }
   }
-  / _"var"_ iden:(ID (COMMA ID)*) _";"_{
+  / "var" iden:(ID ("," ID)*) ";"{
     return {
       type: "VARIABLE",
       id: iden
     }
   }
-  / _"procedure"_ iden:ID _"("_ argu:((ARGUMENTO COMMA)* ARGUMENTO)? _")"_ _";"_ bloque:BLOQUE _";"_{
+  / "procedure" iden:ID "(" argu:((ARGUMENTO ",")* ARGUMENTO) ")" ";" bloque:BLOQUE ";"{
     return{
       type: "PROCEDURE",
       id: iden,
@@ -43,39 +43,39 @@ PRIMARIO
   }
   
 INSTRUCCION
-  = iden:ID _":="_ expr:EXPRESION{
+  = iden:ID ":=" expr:EXPRESION{
     return {
       type: "ASIGNACION",
       id: iden,
       exp: expr
     }
   }
-  / _"call"_ iden:ID _"("_ argu:((ARGUMENTO COMMA)* ARGUMENTO)? _")"_{
+  / "call" iden:ID "(" argu:((ARGUMENTO ",")* ARGUMENTO) ")"{
     return {
       type: "CALL",
       id: iden,
       args: argu
     }
   }
-  / _"?"_ ident:ID{
+  / "?" ident:ID{
     return {
       type: "?",
       id: ident
     }
   }
-  / _"!"_ expr:EXPRESION{
+  / "!" expr:EXPRESION{
     return {
       type: "!",
       exp: expr
     }
   }
-  / _"begin"_ instruc:(INSTRUCCION _";"_)* _"end"_{
+  / "begin" instruc:(INSTRUCCION ";")+ "end"{
     return {
       type: "BEGIN-END",
       instr: instruc
     }
   }
-  / _"if"_ condi:CONDICION _"then"_ instr1:INSTRUCCION elseterm:(_"else"_ instr2:INSTRUCCION)?{
+  / "if" condi:CONDICION "then" instr1:(INSTRUCCION)+ elseterm:("else" instr2:(INSTRUCCION)+)?{
     return {
       type: "IF",
       cond: condi,
@@ -83,7 +83,7 @@ INSTRUCCION
       else: elseterm
     }
   }
-  / _"while"_ condi:CONDICION _"do"_ instru:(INSTRUCCION)*{
+  / "while" condi:CONDICION "do" instru:(INSTRUCCION)+{
     return {
       type: "WHILE",
       cond: condi,
@@ -106,7 +106,7 @@ ARGUMENTO
   }
 
 CONDICION
-  = _"odd"_ exp:EXPRESION{
+  = "odd" exp:EXPRESION{
     return{
       type: "CONDICION ODD",
       value: exp
@@ -154,7 +154,7 @@ TERM
   }
 
 FACTOR
-  = _"("_ exp:EXPRESION _")"_ {
+  = LEFTPAR exp:EXPRESION RIGHTPAR {
     return {
       type: "FACTOR",
       value: expression
@@ -173,12 +173,6 @@ FACTOR
       }
   }
   
-integer "integer"
-  = NUMBER
-
-_ = $[ \t\n\r]*
-
-NUMBER = _ $[0-9]+ _
 ADDOP = PLUS / MINUS
 MULOP = MULT / DIV
 PLUS = _"+"_
@@ -194,5 +188,3 @@ MAYOR = _">"_ { return '>'; }
 MAYORQUE = _">="_ { return '>='; }
 IGUAL = _"="_ { return '='; }
 HASH = _"#"_ { return '#'; }
-COMMA = _","_
-PUNTO = _"."_
