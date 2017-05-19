@@ -16,5 +16,5 @@ procedure mult(x, y);
 begin
   x := m;
   y := n;
-  call mult(x);
+  call mult(x, 8);
 end.
