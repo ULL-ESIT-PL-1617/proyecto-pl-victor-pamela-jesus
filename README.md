@@ -2,9 +2,9 @@
 
 ### Ejemplo de uso
 
-    const m = 7, n = 85;  
+    const m = 7, n = 85, t = 6;  
     var  i,x,y,z,q,r;  
-    procedure mult();
+    procedure mult(x, y);
        var a, b;
       begin 
          a := x;  b := y; z := 0;
@@ -14,11 +14,12 @@
             a := 2*a;
             b := b/2;
          end;
-      end;
+      end
+      return a;
     begin
       x := m;
       y := n;
-      call mult();
+      call mult(x, 8);
     end.
 
 ### Gramática
