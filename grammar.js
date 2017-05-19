@@ -393,10 +393,10 @@ function peg$parse(input, options) {
       peg$c78 = peg$literalExpectation("/", false),
       peg$c79 = function() { return '/'; },
       peg$c80 = function(num) { return num; },
-      peg$c81 = /^[a-zA-Z]/i,
-      peg$c82 = peg$classExpectation([["a", "z"], ["A", "Z"]], false, true),
-      peg$c83 = /^[a-zA-Z0-9]/i,
-      peg$c84 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"]], false, true),
+      peg$c81 = /^[a-zA-Z]/,
+      peg$c82 = peg$classExpectation([["a", "z"], ["A", "Z"]], false, false),
+      peg$c83 = /^[a-zA-Z0-9]/,
+      peg$c84 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"]], false, false),
       peg$c85 = function(id) { return id; },
       peg$c86 = "<",
       peg$c87 = peg$literalExpectation("<", false),
@@ -1882,13 +1882,7 @@ function peg$parse(input, options) {
     }
     if (s0 === peg$FAILED) {
       s0 = peg$currPos;
-      s1 = peg$currPos;
-      s2 = peg$parseinteger();
-      if (s2 !== peg$FAILED) {
-        s1 = input.substring(s1, peg$currPos);
-      } else {
-        s1 = s2;
-      }
+      s1 = peg$parseNUM();
       if (s1 !== peg$FAILED) {
         peg$savedPos = s0;
         s1 = peg$c61(s1);
@@ -1896,13 +1890,7 @@ function peg$parse(input, options) {
       s0 = s1;
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
-        s1 = peg$currPos;
-        s2 = peg$parseID();
-        if (s2 !== peg$FAILED) {
-          s1 = input.substring(s1, peg$currPos);
-        } else {
-          s1 = s2;
-        }
+        s1 = peg$parseID();
         if (s1 !== peg$FAILED) {
           peg$savedPos = s0;
           s1 = peg$c62(s1);

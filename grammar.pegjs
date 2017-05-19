@@ -207,13 +207,13 @@ FACTOR
       value: expression
     }
   }
-  / int:$integer {
+  / int:NUM {
       return {
         type: "FACTOR",
         value: int
       }
   }
-  / id:$ID {
+  / id:ID {
       return {
         type: "FACTOR",
         value: id
@@ -233,7 +233,7 @@ MINUS = _"-"_ { return '-'; }
 MULT = _"*"_ { return '*'; }
 DIV = _"/"_ { return '/'; }
 NUM = _ num:$[0-9]+ _ { return num; }
-ID = _ id:$([a-zA-Z]i$([a-zA-Z0-9]i*)) _ { return id; }
+ID = _ id:$([a-zA-Z]$([a-zA-Z0-9]*)) _ { return id; }
 COMPARISONOPERATOR = MENOR / MENORQUE / MAYOR / MAYORQUE / IGUAL / HASH
 MENOR = _"<"_ { return '<'; }
 MENORQUE = _"<="_ { return '<='; }
