@@ -43,6 +43,7 @@
                             | "begin" (INSTRUCCION ";")* "end"
                             | "if" CONDICION "then" INSTRUCCION ("else" INSTRUCCION)?
                             | "while" CONDICION "do" (INSTRUCCION)*)
+                            | "return" EXPRESION
         5.  ARGUMENTO -> (EXPRESION
                         | ID)
         6.  CONDICION -> ("odd" EXPRESION

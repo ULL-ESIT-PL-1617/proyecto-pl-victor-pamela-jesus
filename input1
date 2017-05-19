@@ -11,7 +11,7 @@ procedure mult(x, y);
         b := b/2;
      end;
   end
-  return a;
+  return a+1;
 
 begin
   x := m;

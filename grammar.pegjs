@@ -123,7 +123,7 @@ INSTRUCCION
       instrucciones: instru
     }
   }
-  / _"return"_ iden:$ID{
+  / _"return"_ iden:EXPRESION{
     return {
       type: "RETURN",
       valor: iden
@@ -228,12 +228,12 @@ _ = $[ \t\n\r]*
 NUMBER = _ $[0-9]+ _
 ADDOP = PLUS / MINUS
 MULOP = MULT / DIV
-PLUS = _"+"_
-MINUS = _"-"_
-MULT = _"*"_
-DIV = _"/"_
+PLUS = _"+"_ { return '+'; }
+MINUS = _"-"_ { return '-'; }
+MULT = _"*"_ { return '*'; }
+DIV = _"/"_ { return '/'; }
 NUM = _ num:$[0-9]+ _ { return num; }
-ID = _ id:$([a-z_]i$([a-z0-9_]i*)) _ { return id; }
+ID = _ id:$([a-zA-Z]i$([a-zA-Z0-9]i*)) _ { return id; }
 COMPARISONOPERATOR = MENOR / MENORQUE / MAYOR / MAYORQUE / IGUAL / HASH
 MENOR = _"<"_ { return '<'; }
 MENORQUE = _"<="_ { return '<='; }
