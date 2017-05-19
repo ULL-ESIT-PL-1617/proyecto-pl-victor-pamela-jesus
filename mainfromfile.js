@@ -9,6 +9,6 @@ fs.readFile(fileName, 'utf8', function (err,input) {
   }
   console.log(`Processing <\n${input}\n>`);
   var r = PEG.parse(input);
-  console.log(util.inspect(r));
+  console.log(util.inspect(r, {depth: null}));
 });
 
