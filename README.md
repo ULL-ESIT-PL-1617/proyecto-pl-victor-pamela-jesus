@@ -21,7 +21,7 @@
       call mult();
     end.
 
-Esta es la gramática:
+### Gramática
 
     1.  Σ = { "const", ";", "var", "procedure", "(", ")", ":=", "call", "?",
               "!", "begin", "end", "if", "then", "else", "while", "do", COMMA,
@@ -52,3 +52,9 @@ Esta es la gramática:
                     | factor)
         9.  FACTOR -> ('(' expression ')' 
                       | NUM)
+                     
+### Mejoras implementadas
+
+    1) Añadido el else del if.
+    2) Añadido la posibilidad de argumentos en funciones.
+    3) Añadido el return.

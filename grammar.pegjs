@@ -15,30 +15,52 @@ BLOQUE
   }
   
 PRIMARIO
-  = _"const"_ iden:(ID IGUAL NUM (COMMA ID IGUAL NUM)*) _";"_{
+  = _"const"_ iden:ID IGUAL valor:NUM commas:(COMMA iden2:ID IGUAL valor2:NUM)* _";"_{
+    var constan = [];
+    constan.push({
+      id: iden,
+      val: valor
+    });
+    commas.forEach(function(element) {
+        constan.push({id: element[1], val: element[3]});
+    });
     return {
-      type: "CONST",
-      id: iden
+      type: "CONSTANTES",
+      constantes: constan
     }
   }
-  / _"var"_ iden:(ID (COMMA ID)*) _";"_{
-    return {
-      type: "VARIABLE",
+  / _"var"_ iden:ID commas:(COMMA iden2:ID)* _";"_{
+    var vars = [];
+    vars.push({
       id: iden
+    });
+    commas.forEach(function(element) {
+        vars.push({id: element[1]});
+    });
+    return {
+      type: "VARIABLES",
+      variables: vars
     }
   }
-  / _"procedure"_ iden:ID _"("_ argu:((ARGUMENTO COMMA)* ARGUMENTO)? _")"_ _";"_ bloque:BLOQUE _";"_{
+  / _"procedure"_ iden:ID _"("_ argu:ARGUMENTO commas:(COMMA argu2:ARGUMENTO)* _")"_ _";"_ bloque:BLOQUE _";"_{
+    var argumen = [];
+    argumen.push({
+      arg: argu
+    });
+    commas.forEach(function(element) {
+        argumen.push({arg: element[1]});
+    });
     return{
       type: "PROCEDURE",
       id: iden,
-      arg: argu,
+      argumentos: argumen,
       bloq: bloque
     }
   }
   / instru:INSTRUCCION{
     return {
       type: "INSTRUCCION",
-      instr: instru
+      instruccion: instru
     }
   }
   
@@ -50,11 +72,18 @@ INSTRUCCION
       exp: expr
     }
   }
-  / _"call"_ iden:ID _"("_ argu:((ARGUMENTO COMMA)* ARGUMENTO)? _")"_{
+  / _"call"_ iden:ID _"("_ argu:ARGUMENTOCALL commas:(COMMA argu2:ARGUMENTOCALL)* _")"_{
+    var argumen = [];
+    argumen.push({
+      arg: argu
+    });
+    commas.forEach(function(element) {
+        argumen.push({arg: element[1]});
+    });
     return {
       type: "CALL",
       id: iden,
-      args: argu
+      argumentos: argumen
     }
   }
   / _"?"_ ident:ID{
@@ -70,39 +99,57 @@ INSTRUCCION
     }
   }
   / _"begin"_ instruc:(INSTRUCCION _";"_)* _"end"_{
+    var instruccione = [];
+    instruc.forEach(function(element) {
+        instruccione.push({instruc: element[0]});
+    });
     return {
       type: "BEGIN-END",
-      instr: instruc
+      instrucciones: instruccione
     }
   }
-  / _"if"_ condi:CONDICION _"then"_ instr1:INSTRUCCION elseterm:(_"else"_ instr2:INSTRUCCION)?{
+  / _"if"_ condi:CONDICION _"then"_ instr1:INSTRUCCION elseterm:((_"else"_) instr2:INSTRUCCION)?{
     return {
       type: "IF",
-      cond: condi,
-      instr: instr1,
-      else: elseterm
+      condicion: condi,
+      instruccion: instr1,
+      instruccionelse: elseterm[1]
     }
   }
   / _"while"_ condi:CONDICION _"do"_ instru:(INSTRUCCION)*{
     return {
       type: "WHILE",
-      cond: condi,
-      instr: instru
+      condicion: condi,
+      instrucciones: instru
+    }
+  }
+  / _"return"_ iden:$ID{
+    return {
+      type: "RETURN",
+      valor: iden
     }
   }
   
 ARGUMENTO
-  = exp:EXPRESION {
+  = id:$ID {
+      return {
+        type: "ARGUMENTOID",
+        value: id
+      }
+  }
+  
+ARGUMENTOCALL
+  = id:$ID {
+      return {
+        type: "ARGUMENTOID",
+        value: id
+      }
+  }
+  / exp:EXPRESION {
     return {
       type: "ARGUMENTO",
       value: exp
     }
-  }
-  / id:$ID {
-      return {
-        type: "ARGUMENTO",
-        value: id
-      }
   }
 
 CONDICION
@@ -166,7 +213,7 @@ FACTOR
         value: int
       }
   }
-  / id:ID {
+  / id:$ID {
       return {
         type: "FACTOR",
         value: id
@@ -185,8 +232,8 @@ PLUS = _"+"_
 MINUS = _"-"_
 MULT = _"*"_
 DIV = _"/"_
-NUM = _ $[0-9]+ _
-ID = _ $([a-z_]i$([a-z0-9_]i*)) _
+NUM = _ num:$[0-9]+ _ { return num; }
+ID = _ id:$([a-z_]i$([a-z0-9_]i*)) _ { return id; }
 COMPARISONOPERATOR = MENOR / MENORQUE / MAYOR / MAYORQUE / IGUAL / HASH
 MENOR = _"<"_ { return '<'; }
 MENORQUE = _"<="_ { return '<='; }
