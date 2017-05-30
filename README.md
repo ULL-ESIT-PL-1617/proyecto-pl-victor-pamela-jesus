@@ -66,3 +66,5 @@
 ### ¿Qué falta?
 
     1) Generar código JavaScript.
+    2) Ámbitos locales para funciones. (Opcional)
+    3) Hacer la página web y la aplicación heroku host del analizador.
