@@ -60,9 +60,9 @@
     1) Añadido el else del if.
     2) Añadido la posibilidad de argumentos en funciones.
     3) Añadido el return.
+    4) Comprobar que el número de argumentos pasados en la llamada es correcto.
+    5) Comprobar que las variables han sido declaradas cuando son usadas.
     
 ### ¿Qué falta?
 
-    1) Comprobar que el número de argumentos pasados en la llamada es correcto.
-    2) Comprobar que las variables han sido declaradas cuando son usadas.
-    3) Generar código JavaScript.
+    1) Generar código JavaScript.

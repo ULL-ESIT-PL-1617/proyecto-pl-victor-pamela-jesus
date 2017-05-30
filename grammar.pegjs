@@ -1,3 +1,6 @@
+{var vari = {};
+ var func = {};}
+
 PROGRAMA
   = codigo:BLOQUE PUNTO{
     return{
@@ -21,8 +24,10 @@ PRIMARIO
       id: iden,
       val: valor
     });
+    vari[iden] = valor;
     commas.forEach(function(element) {
         constan.push({id: element[1], val: element[3]});
+        vari[element[1]] = element[3];
     });
     return {
       type: "CONSTANTES",
@@ -34,8 +39,10 @@ PRIMARIO
     vars.push({
       id: iden
     });
+    vari[iden] = 0;
     commas.forEach(function(element) {
         vars.push({id: element[1]});
+        vari[element[1]] = 0;
     });
     return {
       type: "VARIABLES",
@@ -47,9 +54,12 @@ PRIMARIO
     argumen.push({
       arg: argu
     });
+    var num = 1;
     commas.forEach(function(element) {
         argumen.push({arg: element[1]});
+        num++;
     });
+    func[iden] = num;
     return{
       type: "PROCEDURE",
       id: iden,
@@ -66,6 +76,8 @@ PRIMARIO
   
 INSTRUCCION
   = iden:ID _":="_ expr:EXPRESION{
+    if(vari[iden] == null)
+      throw "No se declaró la variable " + iden + ".";
     return {
       type: "ASIGNACION",
       id: iden,
@@ -73,13 +85,19 @@ INSTRUCCION
     }
   }
   / _"call"_ iden:ID _"("_ argu:ARGUMENTOCALL commas:(COMMA argu2:ARGUMENTOCALL)* _")"_{
+    if(func[iden] == null)
+      throw "No se declaró la función " + iden + ".";
     var argumen = [];
     argumen.push({
       arg: argu
     });
+    var num = 1;
     commas.forEach(function(element) {
         argumen.push({arg: element[1]});
+        num++;
     });
+    if(func[iden] != num)
+      throw "La llamada a la función " + iden + " no tiene el número de argumentos correcto.";
     return {
       type: "CALL",
       id: iden,
@@ -87,6 +105,8 @@ INSTRUCCION
     }
   }
   / _"?"_ ident:ID{
+    if(vari[ident] == null)
+      throw "No se declaró la variable " + ident + ".";
     return {
       type: "?",
       id: ident
@@ -132,6 +152,7 @@ INSTRUCCION
   
 ARGUMENTO
   = id:$ID {
+      vari[id] = 0;
       return {
         type: "ARGUMENTOID",
         value: id
@@ -140,6 +161,8 @@ ARGUMENTO
   
 ARGUMENTOCALL
   = id:$ID {
+      if(vari[id] == null)
+        throw "No se declaró la variable " + iden + ".";
       return {
         type: "ARGUMENTOID",
         value: id
@@ -214,6 +237,8 @@ FACTOR
       }
   }
   / id:ID {
+      if(vari[id] == null)
+        throw "No se declaró la variable " + iden + ".";
       return {
         type: "FACTOR",
         value: id
