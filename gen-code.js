@@ -35,28 +35,31 @@ var translate = function(treeNode) {
             return nodeTranslation + translate(treeNode.value);
             
         case "BLOQUE":
-            return nodeTranslation + translate(treeNode.value);
+            treeNode.value.forEach( function(instruccion) {
+                nodeTranslation += translate(instruccion);
+            })
+            return nodeTranslation;
             
         case "CONSTANTES":
             treeNode.constantes.forEach( function (node) {
-                nodeTranslation += "sym[" + node['id'] + "] = " + node['val'] + ";\n";
+                nodeTranslation += "sym['" + node['id'] + "'] = " + node['val'] + ";\n";
             });
             return nodeTranslation;
             
         case "VARIABLES":
             nodeTranslation += "let ";
-            treeNode.variables.map( function (node) {
-                return node['id'];
-            }).join();
+            nodeTranslation += treeNode.variables.map( function (node) {
+                return node.id;
+            }).join(", ");
             nodeTranslation += ";\n";
             return nodeTranslation;
             
         case "PROCEDURE":
             nodeTranslation += "var " + treeNode.id + " = function(" ;
-            treeNode.argumentos.forEach( function(node) {
-                nodeTranslation += node['arg']['value'];
-            });
-            nodeTranslation += "{" + translate(treeNode.bloq) + ")};\n";
+            nodeTranslation += treeNode.argumentos.map( function(node) {
+                return node['arg']['value'];
+            }).join(", ");
+            nodeTranslation += ") {\n" + translate(treeNode.bloq) + ")};\n";
             return nodeTranslation;
             
         case "ASIGNACION":
@@ -69,7 +72,7 @@ var translate = function(treeNode) {
             return "HOLA";
             
         case 'RETURN':
-            return "return " + translate(treeNode.valor) + ";\n";
+            return "return " + translate(treeNode["value"]) + ";\n";
             
         case 'BEGIN-END':
             return "HOLA";
@@ -78,7 +81,7 @@ var translate = function(treeNode) {
             return "HOLA";
             
         case 'ARGUMENTOID':
-            return treeNode.value;
+            return treeNode["value"];
             
         case 'ARGUMENTO':
             return "HOLA";
@@ -87,14 +90,18 @@ var translate = function(treeNode) {
             return "HOLA";
             
         case 'FACTOR':
-            return treeNode.value;
+            return treeNode["value"];
             
         case 'IF':
-            nodeTranslation += "if (" + translate(treeNode.condicion) + ") {" + translate(treeNode.instruccion) + "};\n";
+            return "if (" + translate(treeNode.condicion) + ") {" + translate(treeNode.instruccion) + "};\n";
             
         case 'CONDICION ODD':
             return "HOLA";
+            
+        default:
+            return "ESTO NO DEBERIA ESTAR PASANDO POR NINGUN MOTIVO";
     }
+    //console.log("HOLAAAAAAA");
     return nodeTranslation;
 }
 
@@ -112,7 +119,7 @@ fs.readFile(fileName, 'utf8', function (err,input) {
   }
   console.log(`Processing <\n${input}\n>`);
   var r = PEG.parse(input);
-   let js = prefixTemplate()+translate(r)+suffixTemplate();
-    console.log(beautify(js, {indent_size: 2}));
+   let js = translate(r);
+    console.log(js);
   //console.log(util.inspect(r, {depth: null}));
 });
