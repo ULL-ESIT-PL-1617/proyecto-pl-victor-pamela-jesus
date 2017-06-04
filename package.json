@@ -28,5 +28,8 @@
     "chai": "*",
     "mocha": "*",
     "pegjs": ">=0.10.0"
+  },
+  "dependencies": {
+    "js-beautify": "^1.6.14"
   }
 }
