@@ -30,6 +30,7 @@ let suffixTemplate  = function() {
 
 var translate = function(treeNode) {
     var nodeTranslation = "";
+    if(treeNode)
     switch(treeNode.type) {
         case "PROGRAMA":
             return nodeTranslation + translate(treeNode.value);
@@ -41,9 +42,11 @@ var translate = function(treeNode) {
             return nodeTranslation;
             
         case "CONSTANTES":
-            treeNode.constantes.forEach( function (node) {
-                nodeTranslation += "sym['" + node['id'] + "'] = " + node['val'] + ";\n";
-            });
+            nodeTranslation += "const ";
+            nodeTranslation += treeNode.constantes.map( function (node) {
+                return node.id + " = " + node.value;
+            }).join(", ");
+            nodeTranslation += ";\n";
             return nodeTranslation;
             
         case "VARIABLES":
@@ -63,46 +66,62 @@ var translate = function(treeNode) {
             return nodeTranslation;
             
         case "ASIGNACION":
-            return "sym['" + treeNode.id + "' = " + translate(treeNode.exp);
+            return treeNode.id + " = " + translate(treeNode.exp) +";\n";
             
         case "EXPRESION":
-            return "HOLA";
+            if(treeNode.value) {
+                return translate(treeNode.value);
+            } else {
+                return "" + translate(treeNode.leftT) + treeNode.op + translate(treeNode.rightT);
+            }
             
         case 'INSTRUCCION':
-            return "HOLA";
+            return translate(treeNode.instruccion);
             
         case 'RETURN':
             return "return " + translate(treeNode["value"]) + ";\n";
             
         case 'BEGIN-END':
-            return "HOLA";
+            treeNode.instrucciones.forEach( function(node) {
+                nodeTranslation += translate(node['instruc']);
+            });
+            return nodeTranslation;
             
         case 'CALL':
-            return "HOLA";
+            nodeTranslation += treeNode.id + "(";
+            nodeTranslation += treeNode.argumentos.map( function(node) {
+                return translate(node.arg);
+            }).join(', ');
+            nodeTranslation += ");\n"
+            return nodeTranslation;
             
         case 'ARGUMENTOID':
             return treeNode["value"];
             
         case 'ARGUMENTO':
-            return "HOLA";
+            return translate(treeNode['value']);
             
         case 'TERM':
-            return "HOLA";
+            return translate(treeNode['value']);
             
         case 'FACTOR':
-            return treeNode["value"];
+            return "" + treeNode["value"];
             
         case 'IF':
-            return "if (" + translate(treeNode.condicion) + ") {" + translate(treeNode.instruccion) + "};\n";
+            return "if (" + translate(treeNode.condicion) + ") {\n" + translate(treeNode.instruccion) + "};\n";
+            
+        case 'WHILE':    
+            return "while (" + translate(treeNode.condicion) + ") {\n" + treeNode.instrucciones.map( function(instruccion) { return translate(instruccion) }) + "};\n";
+
+        case 'CONDICION':
+            return "" + translate(treeNode.leftT) + treeNode.op + translate(treeNode.rightT);
             
         case 'CONDICION ODD':
-            return "HOLA";
+            return translate(treeNode.value) +"%2 == 1";
             
         default:
-            return "ESTO NO DEBERIA ESTAR PASANDO POR NINGUN MOTIVO";
+            return treeNode;
     }
-    //console.log("HOLAAAAAAA");
-    return nodeTranslation;
 }
 
 /*module.exports = function(tree) {
@@ -120,6 +139,7 @@ fs.readFile(fileName, 'utf8', function (err,input) {
   console.log(`Processing <\n${input}\n>`);
   var r = PEG.parse(input);
    let js = translate(r);
-    console.log(js);
+    //console.log(js);
+    console.log(beautify(js, {indent_size:2}));
   //console.log(util.inspect(r, {depth: null}));
 });

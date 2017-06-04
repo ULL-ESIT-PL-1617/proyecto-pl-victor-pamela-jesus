@@ -65,6 +65,6 @@
     
 ### ¿Qué falta?
 
-    1) Generar código JavaScript.
+    1) Generar código JavaScript. Falta arreglar expresión, casi listo
     2) Ámbitos locales para funciones. (Opcional)
     3) Hacer la página web y la aplicación heroku host del analizador.
