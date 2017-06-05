@@ -16,7 +16,7 @@ module.exports = () => {
 }; // end prefix
 
 let suffixTemplate  = function() {
-   return `;
+   return `
      return sym;
   }
   catch(e) {
@@ -102,13 +102,27 @@ var translate = function(treeNode) {
             return translate(treeNode['value']);
             
         case 'TERM':
-            return translate(treeNode['value']);
+            if(treeNode.value) {
+                return translate(treeNode.value);
+            } else {
+                return "" + translate(treeNode.leftT) + treeNode.op + translate(treeNode.rightT);
+            }
             
         case 'FACTOR':
-            return "" + treeNode["value"];
+            return treeNode["value"];
+            
+        case 'FACTORNUM':
+            return treeNode["value"];
+            
+        case 'FACTORID':
+            return treeNode["value"];
             
         case 'IF':
-            return "if (" + translate(treeNode.condicion) + ") {\n" + translate(treeNode.instruccion) + "};\n";
+            nodeTranslation += "if (" + translate(treeNode.condicion) + ") {\n" + translate(treeNode.instruccion) + "}";
+            if(treeNode.instruccionelse) {
+                nodeTranslation += " else {\n" + translate(treeNode.instruccionelse) + "}\n";
+            }
+            return nodeTranslation;
             
         case 'WHILE':    
             return "while (" + translate(treeNode.condicion) + ") {\n" + treeNode.instrucciones.map( function(instruccion) { return translate(instruccion) }) + "};\n";
@@ -139,7 +153,8 @@ fs.readFile(fileName, 'utf8', function (err,input) {
   console.log(`Processing <\n${input}\n>`);
   var r = PEG.parse(input);
    let js = translate(r);
-    //console.log(js);
-    console.log(beautify(js, {indent_size:2}));
+   
+  console.log(beautify(prefixTemplate() + js + suffixTemplate(), {indent_size:2}));
+  return (beautify(prefixTemplate() + js + suffixTemplate(), {indent_size:2}));
   //console.log(util.inspect(r, {depth: null}));
 });

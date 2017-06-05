@@ -22,11 +22,11 @@ PRIMARIO
     var constan = [];
     constan.push({
       id: iden,
-      val: valor
+      value: valor
     });
     vari[iden] = valor;
     commas.forEach(function(element) {
-        constan.push({id: element[1], val: element[3]});
+        constan.push({id: element[1], value: element[3]});
         vari[element[1]] = element[3];
     });
     return {
@@ -146,7 +146,7 @@ INSTRUCCION
   / _"return"_ iden:EXPRESION{
     return {
       type: "RETURN",
-      valor: iden
+      value: iden
     }
   }
   
@@ -232,7 +232,7 @@ FACTOR
   }
   / int:NUM {
       return {
-        type: "FACTOR",
+        type: "FACTORNUM",
         value: int
       }
   }
@@ -240,7 +240,7 @@ FACTOR
       if(vari[id] == null)
         throw "No se declaró la variable " + iden + ".";
       return {
-        type: "FACTOR",
+        type: "FACTORID",
         value: id
       }
   }

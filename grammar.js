@@ -161,11 +161,11 @@ function peg$parse(input, options) {
           var constan = [];
           constan.push({
             id: iden,
-            val: valor
+            value: valor
           });
           vari[iden] = valor;
           commas.forEach(function(element) {
-              constan.push({id: element[1], val: element[3]});
+              constan.push({id: element[1], value: element[3]});
               vari[element[1]] = element[3];
           });
           return {
@@ -315,7 +315,7 @@ function peg$parse(input, options) {
       peg$c49 = function(iden) {
           return {
             type: "RETURN",
-            valor: iden
+            value: iden
           }
         },
       peg$c50 = function(id) {
@@ -391,7 +391,7 @@ function peg$parse(input, options) {
         },
       peg$c62 = function(int) {
             return {
-              type: "FACTOR",
+              type: "FACTORNUM",
               value: int
             }
         },
@@ -399,7 +399,7 @@ function peg$parse(input, options) {
             if(vari[id] == null)
               throw "No se declaró la variable " + iden + ".";
             return {
-              type: "FACTOR",
+              type: "FACTORID",
               value: id
             }
         },
