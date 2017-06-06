@@ -63,7 +63,3 @@
     4) Comprobar que el número de argumentos pasados en la llamada es correcto.
     5) Comprobar que las variables han sido declaradas cuando son usadas.
     6) Traductor a javascript.
-    
-### ¿Qué falta?
-
-    1) test

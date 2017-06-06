@@ -93,7 +93,7 @@ var translate = function(treeNode) {
             return nodeTranslation;
             
         case 'ARGUMENTOID':
-            return treeNode["value"];
+            return "sym['" + treeNode["value"] + "']";
             
         case 'ARGUMENTO':
             return translate(treeNode['value']);
