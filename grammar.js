@@ -327,7 +327,7 @@ function peg$parse(input, options) {
         },
       peg$c51 = function(id) {
             if(vari[id] == null)
-              throw "No se declaró la variable " + iden + ".";
+              throw "No se declaró la variable " + id + ".";
             return {
               type: "ARGUMENTOID",
               value: id
@@ -397,7 +397,7 @@ function peg$parse(input, options) {
         },
       peg$c63 = function(id) {
             if(vari[id] == null)
-              throw "No se declaró la variable " + iden + ".";
+              throw "No se declaró la variable " + id + ".";
             return {
               type: "FACTORID",
               value: id

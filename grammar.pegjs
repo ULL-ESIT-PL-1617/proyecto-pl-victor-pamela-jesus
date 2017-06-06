@@ -162,7 +162,7 @@ ARGUMENTO
 ARGUMENTOCALL
   = id:$ID {
       if(vari[id] == null)
-        throw "No se declaró la variable " + iden + ".";
+        throw "No se declaró la variable " + id + ".";
       return {
         type: "ARGUMENTOID",
         value: id
@@ -238,7 +238,7 @@ FACTOR
   }
   / id:ID {
       if(vari[id] == null)
-        throw "No se declaró la variable " + iden + ".";
+        throw "No se declaró la variable " + id + ".";
       return {
         type: "FACTORID",
         value: id
