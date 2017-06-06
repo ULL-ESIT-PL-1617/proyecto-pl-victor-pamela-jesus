@@ -42,19 +42,16 @@ var translate = function(treeNode) {
             return nodeTranslation;
             
         case "CONSTANTES":
-            nodeTranslation += "const ";
             nodeTranslation += treeNode.constantes.map( function (node) {
-                return node.id + " = " + node.value;
-            }).join(", ");
-            nodeTranslation += ";\n";
+                return "sym['" + node.id + "'] = " + node.value + ";";
+            }).join("\n");
             return nodeTranslation;
             
         case "VARIABLES":
-            nodeTranslation += "let ";
             nodeTranslation += treeNode.variables.map( function (node) {
-                return node.id;
-            }).join(", ");
-            nodeTranslation += ";\n";
+                return "sym['" + node.id + "'] = null;";
+            }).join("\n");
+            
             return nodeTranslation;
             
         case "PROCEDURE":
@@ -66,7 +63,7 @@ var translate = function(treeNode) {
             return nodeTranslation;
             
         case "ASIGNACION":
-            return treeNode.id + " = " + translate(treeNode.exp) +";\n";
+            return "sym['" + treeNode.id + "'] = " + translate(treeNode.exp) +";\n";
             
         case "EXPRESION":
             if(treeNode.value) {
@@ -115,7 +112,7 @@ var translate = function(treeNode) {
             return treeNode["value"];
             
         case 'FACTORID':
-            return treeNode["value"];
+            return "sym['" + treeNode["value"] + "']";
             
         case 'IF':
             nodeTranslation += "if (" + translate(treeNode.condicion) + ") {\n" + translate(treeNode.instruccion) + "}";

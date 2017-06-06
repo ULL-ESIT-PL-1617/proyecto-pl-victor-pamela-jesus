@@ -62,9 +62,8 @@
     3) Añadido el return.
     4) Comprobar que el número de argumentos pasados en la llamada es correcto.
     5) Comprobar que las variables han sido declaradas cuando son usadas.
+    6) Traductor a javascript.
     
 ### ¿Qué falta?
 
-    1) Generar código JavaScript. Falta arreglar expresión, casi listo
-    2) Ámbitos locales para funciones. (Opcional)
-    3) Hacer la página web y la aplicación heroku host del analizador.
+    1) test
